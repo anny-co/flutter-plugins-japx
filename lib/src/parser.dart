@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:collection/collection.dart';
 
 class _TypeIdPair {
@@ -40,6 +41,7 @@ final String _id = 'id';
 final String _data = 'data';
 final String _included = 'included';
 final String _attributes = 'attributes';
+final String _meta = 'meta';
 final String _relationships = 'relationships';
 
 class Japx {
@@ -126,8 +128,10 @@ class Japx {
       Map<String, dynamic> paramsMap) {
     final attributes =
         (object[_attributes] ?? <String, dynamic>{}) as Map<String, dynamic>;
+    final meta = (object[_meta] ?? <String, dynamic>{}) as Map<String, dynamic>;
     attributes[_type] = object[_type];
     attributes[_id] = object[_id];
+    attributes.addAll(meta);
 
     final relationshipsReferences =
         (object[_relationships] ?? <String, dynamic>{}) as Map<String, dynamic>;
@@ -268,6 +272,15 @@ class Japx {
           }
         }
         object.remove(_attributes);
+      }
+      if (object[_meta] != null) {
+        final meta = object[_meta] as Map<String, dynamic>;
+        for (String key in meta.keys) {
+          if (meta[key] != null) {
+            object[key] = meta[key];
+          }
+        }
+        object.remove(_meta);
       }
     }
   }
