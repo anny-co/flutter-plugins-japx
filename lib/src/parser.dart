@@ -128,10 +128,14 @@ class Japx {
       Map<String, dynamic> paramsMap) {
     final attributes =
         (object[_attributes] ?? <String, dynamic>{}) as Map<String, dynamic>;
-    final meta = (object[_meta] ?? <String, dynamic>{}) as Map<String, dynamic>;
+    final meta = object[_meta];
     attributes[_type] = object[_type];
     attributes[_id] = object[_id];
-    attributes.addAll(meta);
+    if (meta is Map<String, dynamic>) {
+      attributes.addAll(meta);
+    } else {
+      attributes[_meta] = meta;
+    }
 
     final relationshipsReferences =
         (object[_relationships] ?? <String, dynamic>{}) as Map<String, dynamic>;
@@ -274,11 +278,15 @@ class Japx {
         object.remove(_attributes);
       }
       if (object[_meta] != null) {
-        final meta = object[_meta] as Map<String, dynamic>;
-        for (String key in meta.keys) {
-          if (meta[key] != null) {
-            object[key] = meta[key];
+        final meta = object[_meta];
+        if (meta is Map<String, dynamic>) {
+          for (String key in meta.keys) {
+            if (meta[key] != null) {
+              object[key] = meta[key];
+            }
           }
+        } else if (meta is List) {
+          object['meta_data'] = meta;
         }
         object.remove(_meta);
       }
