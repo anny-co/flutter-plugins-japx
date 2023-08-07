@@ -285,10 +285,8 @@ class Japx {
               object[key] = meta[key];
             }
           }
-        } else if (meta is List) {
-          object['meta_data'] = meta;
+          object.remove(_meta);
         }
-        object.remove(_meta);
       }
     }
   }
